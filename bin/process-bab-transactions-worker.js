@@ -2,7 +2,7 @@ import Redis from 'ioredis';
 import {Queue, Worker} from 'bullmq';
 import {fetchAll} from './lib/utils.js'
 import {QUEUE_OPTS, REDIS_OPTS, NODE_URL} from "./lib/constants.js";
-
+import frauds from './frauds.json' assert {type: 'json'}
 const connection =  {host: "localhost"}
 const q = new Queue('process-valid-accounts', REDIS_OPTS)
 const redis = new Redis()
@@ -27,7 +27,8 @@ const knownOffenders = [
     "E6HUOCIWONLD2CBU6Z45OY7CQOWAVXGNFKCS77MZSGV6I2KKMFRJMQ4JRY",
     "2IZ4A4RUTTLW2UFINGILDIO3AHHMLWLCILYPXOREVMQ5RPAGC5AT4HS54I",
     "KLLTU6JNZRLDFOEI6K4RBU2YSP3SUWL4CGRMO33EA3F7P2QJ7IXATHY2GY",
-    "5GW5VO4JNTHXVH2DYV7HAKBKGQFSCAI4MBUD5EN3FLBGLF4KKRXJE24ASI"
+    "5GW5VO4JNTHXVH2DYV7HAKBKGQFSCAI4MBUD5EN3FLBGLF4KKRXJE24ASI",
+    ...frauds
 ]
 
 new Worker("process-bab-transactions", async (job) => {
@@ -53,7 +54,11 @@ new Worker("process-bab-transactions", async (job) => {
         }, {})
 
     const txnSenders = Object.keys(txnSenderCounts)
-    const fraudAccounts = knownOffenders.filter((acc) => txnSenders.includes(acc))
+    const fraudAccounts = knownOffenders.filter((acc) => {
+        console.log(txnSenders)
+        console.log(acc, txnSenders.includes(acc))
+        return txnSenders.includes(acc)
+    })
     const isInvalid = fraudAccounts.length > 0 || fraudAccounts.includes(sender)
 
     // Add valid voter for further verification

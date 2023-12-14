@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "brrr": "pm2 start ./ecosystem.config.cjs -i max --watch",
+    "brrr": "pm2 start ./ecosystem.config.cjs",
     "stop": "pm2 stop all",
     "logs": "pm2 logs",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0"
