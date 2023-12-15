@@ -6,9 +6,9 @@ const redis = new Redis()
 const ACCOUNT_URL = `${NODE_URL}/v2/accounts`
 
 new Worker("process-valid-accounts", async (job) => {
-    const {sender} = job.data
+    const {sender, args} = job.data
     const isValidated = await redis.get(`validated:${sender}`).catch(()=>null)
-    const isSneaky = await redis.get(`sneaky:${sender}`).catch(()=>null)
+    const isSneaky = await redis.get(`close-outs:${sender}`).catch(()=>null)
     // Already processed
     if(isValidated || isSneaky ){
         console.log(`${sender} has already been processed`)
@@ -18,9 +18,9 @@ new Worker("process-valid-accounts", async (job) => {
     // List of all senders with duplicates
     const results = await fetch(`${ACCOUNT_URL}/${sender}`).then(r=>r.json()).catch(()=>null)
     if(!results || typeof results.account === 'undefined'){
-        await redis.set(`sneaky:${sender}`, "true")
+        await redis.set(`close-outs:${sender}`, "true")
     } else {
-        await redis.set(`validated:${sender}`, JSON.stringify(results))
+        await redis.set(`validated:${sender}`, JSON.stringify(args))
     }
     console.log(`Finished ${sender}`);
 }, REDIS_OPTS);

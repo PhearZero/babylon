@@ -4,17 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "brrr": "pm2 start ./ecosystem.config.cjs",
-    "stop": "pm2 stop all",
-    "logs": "pm2 logs",
-    "lint": "eslint . --report-unused-disable-directives --max-warnings 0"
+    "start": "concurrently \"npm run start:*\"",
+    "start:broker": "node bin/dispatch-transactions-broker.js",
+    "start:worker": "node --no-warnings ./bin/cluster.js ./bin/process-bab-transactions-worker.js",
+    "start:validator": "node bin/process-valid-votes-worker.js",
+    "update-frauds-json": "node bin/save_fraud_accounts.js",
+    "tabulate": "node bin/tabulate.js",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --fix"
   },
   "dependencies": {
     "bullmq": "^4.15.3",
     "ioredis": "^5.3.2"
   },
   "devDependencies": {
-    "eslint": "^8.55.0",
-    "pm2": "^5.3.0"
+    "concurrently": "^8.2.2",
+    "eslint": "^8.55.0"
   }
 }

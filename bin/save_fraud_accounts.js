@@ -3,6 +3,10 @@ import Redis from 'ioredis'
 
 const redis = new Redis()
 
+/**
+ * From BabFraud Analysis
+ * @type {string[]}
+ */
 const knownBadActors = [
     "FRAUDD77SWCXYGJZS7G5GTNISGWQMM3JEIJIUNGOT64CTG25DJNA45EB7Y",
     "HFKAURI5Q6KC6IHKX4VBV6YYZJNQ7WLQUINSM2HDF6UYJWZULREZVDF5HQ",
@@ -22,12 +26,12 @@ const knownBadActors = [
 ]
 
 const frauds = await redis.keys(`frauds:*`)
-const sneaky = await redis.keys(`sneaky:*`)
+const closed = await redis.keys(`close-outs:*`)
 
 function mapAddr(s){
     return s.split(':')[1]
 }
 
-fs.writeFileSync('./frauds.json', JSON.stringify([...knownBadActors, ...frauds.map(mapAddr), ...sneaky.map(mapAddr)], null, 2))
+fs.writeFileSync('./frauds.json', JSON.stringify([...knownBadActors, ...frauds.map(mapAddr), ...closed.map(mapAddr)], null, 2))
 
 redis.disconnect()
