@@ -1,11 +1,22 @@
 services:
+  couchdb:
+    image: couchdb
+    restart: always
+    ports:
+      - '5984:5984'
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+      - COUCHDB_QUERY_SERVER_JAVASCRIPT="./bin/couchjs ./share/server/main.js -S 3355443000"
+    volumes:
+      - data:/opt/couchdb/data
   redis:
     image: redis
     restart: always
     ports:
       - '6379:6379'
     volumes:
-      - data:/data
+      - cache:/data
   redis-commander:
     container_name: redis-commander
     hostname: redis-commander
@@ -16,5 +27,7 @@ services:
     ports:
       - "8081:8081"
 volumes:
+  cache:
+    external: false
   data:
     external: false
