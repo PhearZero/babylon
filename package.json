@@ -14,12 +14,23 @@
     "lint:fix": "eslint . --report-unused-disable-directives --max-warnings 0 --fix"
   },
   "dependencies": {
+    "@huggingface/inference": "^2.6.4",
     "bullmq": "^4.15.3",
+    "chalk": "^5.3.0",
+    "cli-progress": "^3.12.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "gradient-string": "^2.0.2",
     "ioredis": "^5.3.2",
+    "lodash": "^4.17.21",
     "pouchdb": "^8.0.1"
   },
   "devDependencies": {
+    "@types/gradient-string": "^1.1.5",
     "concurrently": "^8.2.2",
     "eslint": "^8.55.0"
+  },
+  "peerDependencies": {
+    "algosdk": "^2.7.0"
   }
 }
